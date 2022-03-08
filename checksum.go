@@ -32,14 +32,13 @@ func main() {
 
 	fmt.Printf("CALCULATING HASH OF FILE: %s\n\n", *fileName)
 
-	go SHA1(*fileName)
-	MD5(*fileName)
-
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		go SHA512(*fileName)
 		SHA256(*fileName)
+		SHA1(*fileName)
+		MD5(*fileName)
 	}()
 	wg.Wait()
 
