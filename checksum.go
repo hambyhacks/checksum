@@ -36,6 +36,10 @@ func main() {
 
 	// READ FILES
 	md5_buf := make([]byte, 51250)
+	sha1_buf := make([]byte, 51250)
+	sha256_buf := make([]byte, 51250)
+	sha512_buf := make([]byte, 51250)
+
 	fmt.Printf("CALCULATING HASH OF FILE: %s\n\n", *fileName)
 
 	//MD5 HASH
@@ -52,7 +56,6 @@ func main() {
 	}
 
 	defer sha1_file.Close()
-	sha1_buf := make([]byte, 51250)
 
 	sha1hash := sha1.New()
 	if _, err := io.CopyBuffer(sha1hash, sha1_file, sha1_buf); err != nil {
@@ -67,7 +70,7 @@ func main() {
 	}
 
 	defer sha256_file.Close()
-	sha256_buf := make([]byte, 51250)
+
 	sha256hash := sha256.New()
 	if _, err := io.CopyBuffer(sha256hash, sha256_file, sha256_buf); err != nil {
 		panic(err)
@@ -82,7 +85,6 @@ func main() {
 
 	defer sha512_file.Close()
 
-	sha512_buf := make([]byte, 51250)
 	sha512hash := sha512.New()
 	if _, err := io.CopyBuffer(sha512hash, sha512_file, sha512_buf); err != nil {
 		panic(err)
