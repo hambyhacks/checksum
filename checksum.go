@@ -31,6 +31,7 @@ func main() {
 	}
 
 	fmt.Printf("CALCULATING HASH OF FILE: %s\n\n", *fileName)
+
 	go SHA1(*fileName)
 	MD5(*fileName)
 
