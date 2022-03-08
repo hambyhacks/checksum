@@ -2,15 +2,17 @@ package main
 
 import (
 	"crypto/md5"
+	"crypto/sha1"
+	"crypto/sha256"
 	"crypto/sha512"
-	"encoding/hex"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 )
 
 func main() {
-	fmt.Println("MD5/SHA512 CHECKSUM TOOL")
+	fmt.Println("MD5/SHA1/SHA256/SHA512 CHECKSUM TOOL")
 	fileName := flag.String("f", "", "Filename to be checked.")
 	flag.Parse()
 
@@ -25,25 +27,66 @@ func main() {
 		os.Exit(1)
 	}
 
-	file, err := os.Open(*fileName)
+	md5_file, err := os.Open(*fileName)
 	if err != nil {
 		panic(err)
 	}
 
-	defer file.Close()
+	defer md5_file.Close()
 
-	var r = make([]byte, 1024)
-	res, err := file.Read(r)
+	// READ FILES
+	md5_buf := make([]byte, 51250)
+	fmt.Printf("CALCULATING HASH OF FILE: %s\n\n", *fileName)
+
+	//MD5 HASH
+	hashmd5 := md5.New()
+	if _, err := io.CopyBuffer(hashmd5, md5_file, md5_buf); err != nil {
+		panic(err)
+	}
+	fmt.Printf("MD5: %x\n", hashmd5.Sum(nil))
+
+	//SHA-1 HASH
+	sha1_file, err := os.Open(*fileName)
 	if err != nil {
 		panic(err)
 	}
 
-	md5checksum := md5.Sum(r[:res])
-	md5hash := md5checksum[:]
-	sha_512checksum := sha512.Sum512(r[:res])
-	sha512hash := sha_512checksum[:]
+	defer sha1_file.Close()
+	sha1_buf := make([]byte, 51250)
 
-	fmt.Printf("Checking the MD5 and SHA512 hash of %s...\n\n\n", *fileName)
-	fmt.Printf("MD5 HASH: %s\n", hex.EncodeToString(md5hash))
-	fmt.Printf("SHA512 HASH: %s\n\n", hex.EncodeToString(sha512hash))
+	sha1hash := sha1.New()
+	if _, err := io.CopyBuffer(sha1hash, sha1_file, sha1_buf); err != nil {
+		panic(err)
+	}
+	fmt.Printf("SHA1: %x\n", sha1hash.Sum(nil))
+
+	//SHA-256 HASH
+	sha256_file, err := os.Open(*fileName)
+	if err != nil {
+		panic(err)
+	}
+
+	defer sha256_file.Close()
+	sha256_buf := make([]byte, 51250)
+	sha256hash := sha256.New()
+	if _, err := io.CopyBuffer(sha256hash, sha256_file, sha256_buf); err != nil {
+		panic(err)
+	}
+	fmt.Printf("SHA256: %x\n", sha256hash.Sum(nil))
+
+	//SHA-512 HASH
+	sha512_file, err := os.Open(*fileName)
+	if err != nil {
+		panic(err)
+	}
+
+	defer sha512_file.Close()
+
+	sha512_buf := make([]byte, 51250)
+	sha512hash := sha512.New()
+	if _, err := io.CopyBuffer(sha512hash, sha512_file, sha512_buf); err != nil {
+		panic(err)
+	}
+	fmt.Printf("SHA512: %x\n", sha512hash.Sum(nil))
+
 }
