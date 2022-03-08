@@ -11,5 +11,5 @@
 
 ## Todo list
 
-- [ ] Implement concurrency.
+- [x] Implement concurrency.
 - [ ] Clean the code.
